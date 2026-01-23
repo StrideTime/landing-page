@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, TextField, InputAdornment } from "@mui/material";
 import { Email } from "@mui/icons-material";
 import { CTAButton } from "@stridetime/components";
