@@ -16,4 +16,15 @@
 .pricing-slide {
   opacity: 1 !important;
   transition: opacity 0.3s ease;
+  width: 340px !important;
+  flex-shrink: 0;
+}
+
+/* Ensure swiper container displays correctly */
+.swiper {
+  width: 100%;
+}
+
+.swiper-wrapper {
+  display: flex;
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Typography,
@@ -17,9 +19,9 @@ import {
 import { FeatureCard, SectionContainer, CTAButton } from "@stridetime/components";
 import { gradients } from "@stridetime/design-tokens";
 import { useTheme } from "@stridetime/theme";
-import { WaitlistForm } from "../components/WaitlistForm";
+import { WaitlistForm } from "./components/WaitlistForm";
 
-export function Home() {
+export default function Home() {
   const { mode } = useTheme();
 
   const features = [
