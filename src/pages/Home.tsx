@@ -104,7 +104,7 @@ export function Home() {
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Stack alignItems="center" spacing={3} textAlign="center">
             <Chip
-              label="Coming Soon • Productivity Tracking Reimagined"
+              label="Coming Soon"
               color="primary"
               sx={{ fontWeight: 600 }}
             />

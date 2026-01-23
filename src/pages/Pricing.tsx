@@ -287,16 +287,17 @@ export function Pricing() {
            border: plan.highlighted ? `2px solid ${colors.primary[500]}` : undefined,
            transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
            minHeight: 600,
+           overflow: "visible",
            "&:hover": {
             transform: "translateY(-8px)",
-            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.3)",
+            ...(plan.highlighted && { boxShadow: "0 12px 40px rgba(0, 0, 0, 0.3)" }),
            },
           }}>
           {plan.highlighted && (
            <Box
             sx={{
              position: "absolute",
-             top: -12,
+             top: -15,
              left: "50%",
              transform: "translateX(-50%)",
              bgcolor: "primary.main",
