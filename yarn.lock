@@ -824,19 +824,27 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.55.3.tgz#9ab1cdbe4da2b84434ac9b0d5b4ba924a4e8734a"
   integrity sha512-aPFONczE4fUFKNXszdvnd2GqKEYQdV5oEsIbKPujJmWlCI9zEsv1Otig8RKK+X9bed9gFUN6LAeN4ZcNuu4zjg==
 
-"@stridetime/branding@file:../stride-ui/packages/branding":
-  version "0.1.16"
+"@stridetime/branding@^0.1.17":
+  version "0.1.17"
+  resolved "https://npm.pkg.github.com/download/@stridetime/branding/0.1.17/2097d3efb868f794bd746da0210586ee3b978af0#2097d3efb868f794bd746da0210586ee3b978af0"
+  integrity sha512-RB9yW4aT1pdTZvplHty7G4nldo2S50eDkk9EQg8fNBPH8EeMiLRV6kXZ160YG9nC09j9as/cGiIJeEt+uLD36g==
 
-"@stridetime/components@file:../stride-ui/packages/components":
+"@stridetime/components@^0.1.1":
+  version "0.1.1"
+  resolved "https://npm.pkg.github.com/download/@stridetime/components/0.1.1/deeef8ffb4d19a4b940368b97ac13a257f928e6e#deeef8ffb4d19a4b940368b97ac13a257f928e6e"
+  integrity sha512-GtcwL5rLF2UXAZloTK49jP83uCGbw8rOVn4nEPe8AnpCs3jOIzGDkQNUMu2JvtIo2lYoEqWBwtxGMjCVOw7tWQ==
+
+"@stridetime/design-tokens@^0.1.0":
   version "0.1.0"
+  resolved "https://npm.pkg.github.com/download/@stridetime/design-tokens/0.1.0/f4c78631ca21e29f0b456bf055df69aaae2f8d3d#f4c78631ca21e29f0b456bf055df69aaae2f8d3d"
+  integrity sha512-7p+WfGPlr8wsktIvgaSDqZFxvp1xnwjur39eoLvgPvg31DTq9Q0hjWIZ9PRbAo8PAbWbDIJlOsF0VCsao29OVQ==
 
-"@stridetime/design-tokens@file:../stride-ui/packages/design-tokens":
-  version "0.1.0"
-
-"@stridetime/theme@file:../stride-ui/packages/theme":
-  version "0.1.5"
+"@stridetime/theme@^0.1.6":
+  version "0.1.6"
+  resolved "https://npm.pkg.github.com/download/@stridetime/theme/0.1.6/37bc239130fd2956c668424dfb472b47c3622a4e#37bc239130fd2956c668424dfb472b47c3622a4e"
+  integrity sha512-+u/Hva7JZk+doOCNdsBKmBVTi6oqkircnF0vcdhg8N7nnoTEoTUCmy581uPzqGxMi7ohdG1Og7sbuy2fkW0Ubg==
   dependencies:
-    "@stridetime/design-tokens" "file:../../../../Library/Caches/Yarn/v6/npm-@stridetime-theme-0.1.5-1d0b0e85-c863-47b5-9b63-5f454a7059bb-1768979734551/node_modules/@stridetime/design-tokens"
+    "@stridetime/design-tokens" "^0.1.0"
 
 "@svgr/babel-plugin-add-jsx-attribute@8.0.0":
   version "8.0.0"
@@ -2172,6 +2180,11 @@ svg-parser@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/svg-parser/-/svg-parser-2.0.4.tgz#fdc2e29e13951736140b76cb122c8ee6630eb6b5"
   integrity sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==
+
+swiper@^12.0.3:
+  version "12.0.3"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-12.0.3.tgz#c7804fd39955189d3ec652d9832896bd3d04733e"
+  integrity sha512-BHd6U1VPEIksrXlyXjMmRWO0onmdNPaTAFduzqR3pgjvi7KfmUCAm/0cj49u2D7B0zNjMw02TSeXfinC1hDCXg==
 
 tiny-warning@^1.0.2:
   version "1.0.3"

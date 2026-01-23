@@ -17,6 +17,7 @@ import {
 import { FeatureCard, SectionContainer, CTAButton } from "@stridetime/components";
 import { gradients } from "@stridetime/design-tokens";
 import { useTheme } from "@stridetime/theme";
+import { WaitlistForm } from "../components/WaitlistForm";
 
 export function Home() {
   const { mode } = useTheme();
@@ -24,48 +25,48 @@ export function Home() {
   const features = [
     {
       icon: <Timer fontSize="large" />,
-      title: "Smart Time Tracking",
+      title: "Effortless Time Tracking",
       description:
-        "Precise measurement without guesswork. Track your work sessions with automatic timing and manual adjustments when needed.",
+        "Track your work sessions automatically without disrupting your flow. Focus on what matters while Stride handles the details.",
     },
     {
       icon: <TrendingUp fontSize="large" />,
-      title: "Progress Measurement",
+      title: "Visual Progress Tracking",
       description:
-        "Real-time task progress tracking that shows how far you've come and how much remains. Never lose sight of your goals.",
+        "See your progress at a glance with clear visual indicators. Know exactly where you stand on every task and project.",
     },
     {
       icon: <EmojiEvents fontSize="large" />,
-      title: "Gamified Scoring",
+      title: "Achievement System",
       description:
-        "Earn points based on difficulty and efficiency. Transform your productivity into achievements that motivate you to do more.",
+        "Stay motivated with meaningful milestones and achievements. Transform daily work into a rewarding experience.",
     },
     {
       icon: <BarChart fontSize="large" />,
-      title: "Detailed Analytics",
+      title: "Insightful Analytics",
       description:
-        "Daily summaries and comprehensive time reports. Understand your patterns and optimize your workflow with data-driven insights.",
+        "Understand your productivity patterns with beautiful, actionable reports. Make better decisions backed by your own data.",
     },
     {
       icon: <Apps fontSize="large" />,
-      title: "Multi-Area Balance",
+      title: "Multi-Project Support",
       description:
-        "Work across diverse focus areas without losing context. Manage multiple projects and responsibilities in one unified system.",
+        "Organize work across different projects and areas of focus. Keep everything in one place without losing context.",
     },
     {
       icon: <CheckCircle fontSize="large" />,
-      title: "Daily Planning",
+      title: "Smart Daily Planning",
       description:
-        "Structured task lists and clear objectives. Start each day with purpose and end with a sense of accomplishment.",
+        "Plan your day with intelligent task management. Start each morning with clarity and end with a sense of accomplishment.",
     },
   ];
 
   const benefits = [
-    "Accurate time tracking without manual work",
+    "Automatic time tracking without manual work",
     "Actionable insights that inform better habits",
     "Privacy-first with local data storage",
-    "Minimal friction for seamless workflow integration",
-    "Difficulty-based scoring for true progress measurement",
+    "Seamless integration with your workflow",
+    "Achievement-based motivation system",
     "Cross-platform sync when you need it",
   ];
 
@@ -74,15 +75,36 @@ export function Home() {
       {/* Hero Section */}
       <Box
         sx={{
-          background: gradients.hero,
+          position: "relative",
+          overflow: "hidden",
           pt: { xs: 8, md: 12 },
           pb: { xs: 8, md: 12 },
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              "linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(56, 189, 248, 0.15) 25%, rgba(168, 85, 247, 0.15) 75%, rgba(192, 132, 252, 0.1) 100%)",
+            animation: "gradientShift 8s ease infinite",
+            backgroundSize: "200% 200%",
+          },
+          "@keyframes gradientShift": {
+            "0%, 100%": {
+              backgroundPosition: "0% 50%",
+            },
+            "50%": {
+              backgroundPosition: "100% 50%",
+            },
+          },
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Stack alignItems="center" spacing={3} textAlign="center">
             <Chip
-              label="Productivity Tracking Reimagined"
+              label="Coming Soon • Productivity Tracking Reimagined"
               color="primary"
               sx={{ fontWeight: 600 }}
             />
@@ -103,16 +125,15 @@ export function Home() {
               color="text.secondary"
               sx={{ maxWidth: 700, fontSize: { xs: "1.125rem", md: "1.25rem" } }}
             >
-              The productivity app that combines precise time tracking with
-              difficulty-based scoring. Built for knowledge workers who want to
-              measure real progress.
+              Understand your work patterns, stay motivated, and achieve more
+              with intelligent productivity tracking.
             </Typography>
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={2}
               sx={{ pt: 2 }}
             >
-              <CTAButton variant="primary" size="large">Download Stride Desktop</CTAButton>
+              <CTAButton variant="primary" size="large" disabled>Coming Soon</CTAButton>
               <CTAButton variant="secondary" size="large">Learn More</CTAButton>
             </Stack>
           </Stack>
@@ -127,7 +148,7 @@ export function Home() {
           gutterBottom
           sx={{ mb: 6, fontSize: { xs: "2rem", md: "3rem" } }}
         >
-          Everything You Need to Track Real Progress
+          Everything You Need to Stay Productive
         </Typography>
         <Grid container spacing={4}>
           {features.map((feature, index) => (
@@ -152,12 +173,12 @@ export function Home() {
                 gutterBottom
                 sx={{ fontSize: { xs: "1.75rem", md: "2.25rem" } }}
               >
-                Built for Knowledge Workers
+                Built for Focused Work
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
-                Stride is designed for developers, designers, consultants,
-                researchers, and writers who need to understand their
-                productivity beyond simple time tracking.
+                Stride is designed for anyone who wants to understand their
+                productivity better. Whether you're coding, designing, writing,
+                or managing projects—track what matters and improve over time.
               </Typography>
               <Stack spacing={2} sx={{ mt: 3 }}>
                 {benefits.map((benefit, index) => (
@@ -194,24 +215,14 @@ export function Home() {
         <SectionContainer>
           <Stack alignItems="center" spacing={3} textAlign="center">
             <Typography variant="h3" sx={{ fontSize: { xs: "1.75rem", md: "2.25rem" } }}>
-              Ready to Track Real Progress?
+              Be the First to Know
             </Typography>
             <Typography variant="body1" sx={{ maxWidth: 600, opacity: 0.9 }}>
-              Join knowledge workers who are measuring what truly matters.
-              Download Stride Desktop and start tracking your productivity with
-              purpose.
+              Join the waitlist and be notified when Stride launches. Get early
+              access to the productivity tracking experience that measures what
+              truly matters.
             </Typography>
-            <CTAButton
-              size="large"
-              variant="primary"
-              sx={{
-                bgcolor: "white",
-                color: "primary.main",
-                "&:hover": { bgcolor: "grey.100" },
-              }}
-            >
-              Download Stride Desktop
-            </CTAButton>
+            <WaitlistForm variant="dark" size="large" />
           </Stack>
         </SectionContainer>
       </Box>

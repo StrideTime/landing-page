@@ -1,9 +1,24 @@
-import { Box, AppBar, Toolbar, Stack, Container, Typography, Button } from "@mui/material";
+import { Box, AppBar, Toolbar, Stack, Container, Typography, Button, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { Logo } from "@stridetime/branding";
 import { CTAButton } from "@stridetime/components";
-import { Link as RouterLink, Outlet } from "react-router-dom";
+import { Link as RouterLink, Outlet, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export function Layout() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const menuItems = [
+    { label: "Home", path: "/" },
+    { label: "Features", path: "/features" },
+    { label: "Pricing", path: "/pricing" },
+  ];
+
   return (
     <Box>
       {/* Navigation */}
@@ -134,6 +149,7 @@ export function Layout() {
             <Stack direction="row" spacing={2} alignItems="center">
               <CTAButton
                 size="medium"
+                disabled
                 sx={{
                   px: 3,
                   py: 1,
@@ -142,14 +158,111 @@ export function Layout() {
                   "&:hover": {
                     boxShadow: "0 6px 20px 0 rgba(0, 118, 255, 0.5)",
                   },
+                  display: { xs: "none", md: "block" },
                 }}
               >
-                Download
+                Coming Soon
               </CTAButton>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ display: { md: "none" } }}
+              >
+                <MenuIcon />
+              </IconButton>
             </Stack>
           </Toolbar>
         </Container>
       </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            width: "100%",
+            bgcolor: "background.default",
+          },
+        }}
+      >
+        <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
+              borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+            }}
+          >
+            <Logo fontSize="large" />
+            <IconButton
+              onClick={handleDrawerToggle}
+              sx={{
+                color: "white",
+                transform: mobileOpen ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.3s ease",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List sx={{ flexGrow: 1, pt: 4 }}>
+            {menuItems.map((item, index) => (
+              <ListItem key={item.path} disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    navigate(item.path);
+                    handleDrawerToggle();
+                  }}
+                  sx={{
+                    py: 2,
+                    px: 4,
+                    opacity: 0,
+                    animation: mobileOpen ? `slideIn 0.3s ease forwards ${index * 0.1}s` : "none",
+                    "@keyframes slideIn": {
+                      from: {
+                        opacity: 0,
+                        transform: "translateX(20px)",
+                      },
+                      to: {
+                        opacity: 1,
+                        transform: "translateX(0)",
+                      },
+                    },
+                  }}
+                >
+                  <ListItemText
+                    primary={item.label}
+                    primaryTypographyProps={{
+                      fontSize: "1.5rem",
+                      fontWeight: 600,
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Box sx={{ p: 4 }}>
+            <CTAButton
+              fullWidth
+              size="large"
+              disabled
+              sx={{
+                opacity: 0,
+                animation: mobileOpen ? "slideIn 0.3s ease forwards 0.4s" : "none",
+              }}
+            >
+              Coming Soon
+            </CTAButton>
+          </Box>
+        </Box>
+      </Drawer>
 
       {/* Page Content */}
       <Outlet />
