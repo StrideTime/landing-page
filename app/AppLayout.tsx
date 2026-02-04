@@ -16,8 +16,8 @@ import {
  ListItemText,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
-import { Logo } from "@stridetime/branding";
-import { CTAButton } from "@stridetime/components";
+import { Logo } from "@stridetime/ui";
+import { CTAButton } from "@stridetime/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
