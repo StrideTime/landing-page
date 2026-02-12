@@ -744,7 +744,7 @@ export default function Home() {
 
             {/* One-Time Donation */}
             <a
-              href="https://buymeacoffee.com"
+              href="https://buymeacoffee.com/stridetime"
               target="_blank"
               rel="noopener noreferrer"
               className="group p-6 rounded-xl border-2 border-border hover:border-yellow-500/50 bg-background hover:shadow-lg transition-all"
