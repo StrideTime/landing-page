@@ -1,31 +1,35 @@
-import type { Metadata } from "next";
-import { Providers } from "./providers";
+import type { Metadata } from 'next';
+import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { DevBanner } from '@/components/DevBanner';
+import { Header } from '@/components/Header';
 
 export const metadata: Metadata = {
-  title: "Stride - Track Progress, Not Just Time",
+  title: 'Stride - Master Your Productivity',
   description:
-    "Understand your work patterns, stay motivated, and achieve more with intelligent productivity tracking. Privacy-first time tracking and productivity analytics.",
+    'The intelligent task management system that helps teams and individuals achieve their goals with precision and clarity.',
   keywords: [
-    "productivity",
-    "time tracking",
-    "task management",
-    "analytics",
-    "progress tracking",
-    "achievement system",
+    'productivity',
+    'time tracking',
+    'task management',
+    'analytics',
+    'progress tracking',
+    'achievement system',
+    'team collaboration',
   ],
-  authors: [{ name: "Stride" }],
+  authors: [{ name: 'Stride' }],
   openGraph: {
-    title: "Stride - Track Progress, Not Just Time",
+    title: 'Stride - Master Your Productivity',
     description:
-      "Understand your work patterns, stay motivated, and achieve more with intelligent productivity tracking.",
-    type: "website",
-    siteName: "Stride",
+      'The intelligent task management system that helps teams and individuals achieve their goals with precision and clarity.',
+    type: 'website',
+    siteName: 'Stride',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Stride - Track Progress, Not Just Time",
+    card: 'summary_large_image',
+    title: 'Stride - Master Your Productivity',
     description:
-      "Understand your work patterns, stay motivated, and achieve more with intelligent productivity tracking.",
+      'The intelligent task management system that helps teams and individuals achieve their goals with precision and clarity.',
   },
 };
 
@@ -35,9 +39,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body style={{ margin: 0 }}>
-        <Providers>{children}</Providers>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                if (mediaQuery.matches) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body>
+        <ThemeProvider>
+          <DevBanner />
+          <Header />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
