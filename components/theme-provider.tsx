@@ -6,7 +6,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Set theme based on system preference
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const updateTheme = (e: MediaQueryList | MediaQueryListEvent) => {
       if (e.matches) {
         document.documentElement.classList.add('dark');

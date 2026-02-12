@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Zap, Plug, CheckCircle2, Users, Check, ArrowRight, Building2 } from 'lucide-react';
+import { Sparkles, Zap, Plug, CheckCircle2, Users, Check, ArrowRight, Building2, CreditCard, X, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PricingCard, IntegrationCard, ComparisonTable, FAQSection } from '@/components/pricing';
@@ -11,12 +11,17 @@ import { pricingTiers, integrations, comparisonFeatures, faqItems } from './data
 import type { PricingTier } from '@/components/pricing/PricingCard';
 
 export default function PricingPage() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogEmail, setDialogEmail] = useState('');
-  const [dialogSubmitted, setDialogSubmitted] = useState(false);
+
+  // Waitlist dialog state
+  const [waitlistDialogOpen, setWaitlistDialogOpen] = useState(false);
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+
+  // Tier-specific dialog state
+  const [tierDialogOpen, setTierDialogOpen] = useState(false);
+  const [tierDialogEmail, setTierDialogEmail] = useState('');
+  const [tierDialogSubmitted, setTierDialogSubmitted] = useState(false);
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null);
 
   // Integration request dialog state
@@ -26,35 +31,35 @@ export default function PricingPage() {
   const [integrationDescription, setIntegrationDescription] = useState('');
   const [integrationSubmitted, setIntegrationSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleWaitlistSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Waitlist signup:', email);
-    setSubmitted(true);
+    console.log('Waitlist signup:', waitlistEmail);
+    setWaitlistSubmitted(true);
     setTimeout(() => {
-      setSubmitted(false);
-      setEmail('');
-    }, 3000);
+      setWaitlistSubmitted(false);
+      setWaitlistEmail('');
+      setWaitlistDialogOpen(false);
+    }, 2000);
   };
 
-  const handleDialogSubmit = (e: React.FormEvent) => {
+  const handleTierDialogSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Tier waitlist signup:', dialogEmail, 'for tier:', selectedTier?.name);
-    setDialogSubmitted(true);
+    console.log('Tier waitlist signup:', tierDialogEmail, 'for tier:', selectedTier?.name);
+    setTierDialogSubmitted(true);
     setTimeout(() => {
-      setDialogSubmitted(false);
-      setDialogEmail('');
-      setDialogOpen(false);
+      setTierDialogSubmitted(false);
+      setTierDialogEmail('');
+      setTierDialogOpen(false);
     }, 2000);
   };
 
   const handlePricingCta = (tier: PricingTier) => {
     if (tier.comingSoon) {
       setSelectedTier(tier);
-      setDialogOpen(true);
+      setTierDialogOpen(true);
     } else {
-      // Scroll to waitlist form for non-coming-soon tiers
-      const ctaSection = document.querySelector('#waitlist-cta');
-      ctaSection?.scrollIntoView({ behavior: 'smooth' });
+      // Open main waitlist dialog for non-coming-soon tiers
+      setWaitlistDialogOpen(true);
     }
   };
 
@@ -108,21 +113,21 @@ export default function PricingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
               <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-background/50 border border-border/50 backdrop-blur-sm">
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Check className="h-5 w-5 text-primary" />
+                  <CreditCard className="h-5 w-5 text-primary" />
                 </div>
                 <div className="text-sm font-semibold">No credit card required</div>
                 <div className="text-xs text-muted-foreground text-center">Start using Stride immediately</div>
               </div>
               <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-background/50 border border-border/50 backdrop-blur-sm">
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-primary" />
+                  <X className="h-5 w-5 text-primary" />
                 </div>
                 <div className="text-sm font-semibold">Cancel anytime</div>
                 <div className="text-xs text-muted-foreground text-center">No long-term commitment</div>
               </div>
               <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-background/50 border border-border/50 backdrop-blur-sm">
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-primary" />
+                  <TrendingUp className="h-5 w-5 text-primary" />
                 </div>
                 <div className="text-sm font-semibold">Scale as you grow</div>
                 <div className="text-xs text-muted-foreground text-center">Add seats and features on demand</div>
@@ -181,9 +186,9 @@ export default function PricingPage() {
       <section className="py-12 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Building2 className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Need more than 20 seats?</h2>
+          <h2 className="text-2xl font-bold mb-4">Need something custom?</h2>
           <p className="text-muted-foreground mb-6">
-            Enterprise plans include custom seat limits, dedicated support, and tailored onboarding.
+            Enterprise plans include volume discounts, custom integrations, dedicated support, and tailored onboarding.
           </p>
           <Button size="lg" variant="outline">
             Contact Sales
@@ -266,37 +271,65 @@ export default function PricingPage() {
           <p className="text-lg text-muted-foreground mb-8">
             Join the waitlist and be among the first to experience Stride when we launch.
           </p>
-          <div className="max-w-md mx-auto">
-            {!submitted ? (
-              <form onSubmit={handleSubmit} className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="flex-1"
-                />
-                <Button type="submit" size="lg">
-                  Join Waitlist
-                </Button>
-              </form>
-            ) : (
-              <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                <span className="font-medium text-green-600 dark:text-green-400">
-                  Thanks! You're on the list.
-                </span>
-              </div>
-            )}
-          </div>
+          <Button
+            size="lg"
+            onClick={() => setWaitlistDialogOpen(true)}
+            className="px-8"
+          >
+            Join Waitlist
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
         </div>
       </section>
 
       <Footer />
 
-      {/* Coming Soon Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {/* Waitlist Dialog */}
+      <Dialog open={waitlistDialogOpen} onOpenChange={setWaitlistDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Join the Waitlist</DialogTitle>
+            <DialogDescription>
+              Be the first to know when Stride launches. We'll send you an email with early access.
+            </DialogDescription>
+          </DialogHeader>
+
+          {!waitlistSubmitted ? (
+            <form onSubmit={handleWaitlistSubmit} className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <label htmlFor="waitlist-email" className="text-sm font-medium">
+                  Your Email
+                </label>
+                <Input
+                  id="waitlist-email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={waitlistEmail}
+                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Join Waitlist
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                We respect your privacy. No spam, ever. View our{' '}
+                <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>.
+              </p>
+            </form>
+          ) : (
+            <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-lg bg-green-500/10 border border-green-500/20">
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <span className="font-medium text-green-600 dark:text-green-400">
+                Thanks! You're on the list.
+              </span>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Tier-Specific Coming Soon Dialog */}
+      <Dialog open={tierDialogOpen} onOpenChange={setTierDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Get Notified - {selectedTier?.name} Plan</DialogTitle>
@@ -305,15 +338,21 @@ export default function PricingPage() {
             </DialogDescription>
           </DialogHeader>
 
-          {!dialogSubmitted ? (
-            <form onSubmit={handleDialogSubmit} className="space-y-4 mt-4">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={dialogEmail}
-                onChange={(e) => setDialogEmail(e.target.value)}
-                required
-              />
+          {!tierDialogSubmitted ? (
+            <form onSubmit={handleTierDialogSubmit} className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <label htmlFor="tier-email" className="text-sm font-medium">
+                  Your Email
+                </label>
+                <Input
+                  id="tier-email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={tierDialogEmail}
+                  onChange={(e) => setTierDialogEmail(e.target.value)}
+                  required
+                />
+              </div>
               <Button type="submit" className="w-full">
                 Notify Me
               </Button>

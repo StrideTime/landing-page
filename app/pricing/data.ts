@@ -57,7 +57,7 @@ export const pricingTiers: PricingTier[] = [
       monthly: 49,
       annual: 39,
     },
-    description: 'For teams up to 10 members',
+    description: 'For growing teams',
     features: [
       'Team workspace',
       '10 team members',
@@ -79,7 +79,7 @@ export const pricingTiers: PricingTier[] = [
       monthly: 89,
       annual: 69,
     },
-    description: 'For teams up to 20 members',
+    description: 'For larger organizations',
     features: [
       'Everything in Team',
       '20 team members',
@@ -171,7 +171,7 @@ export const comparisonFeatures: ComparisonFeature[] = [
     category: 'Collaboration',
     features: [
       { name: 'Team workspace', free: false, pro: false, team: true, business: true },
-      { name: 'Team members', free: '1', pro: '1', team: '10', business: '20' },
+      { name: 'Seats', free: '1', pro: '1', team: '10+', business: '20+' },
       { name: 'Shared projects', free: false, pro: false, team: true, business: true },
       { name: 'Role permissions', free: false, pro: false, team: 'Basic', business: 'Advanced' },
       { name: 'Team analytics', free: false, pro: false, team: true, business: true },
@@ -200,11 +200,7 @@ export const faqItems: FAQItem[] = [
   },
   {
     question: "Can I add more team members later?",
-    answer: "Yes! Small Team plans can add seats at $5/month each. Business plans can add seats at $4/month each. Need more than 20 seats? Contact us about Enterprise pricing.",
-  },
-  {
-    question: "Can I try before I buy?",
-    answer: "Yes! Pro and all team plans include a 14-day free trial. No credit card required.",
+    answer: "Yes! Small Team plans can add seats at $5/month each. Business plans can add seats at $4/month each. For larger teams or custom needs, contact us about Enterprise pricing.",
   },
   {
     question: "Can I switch plans?",

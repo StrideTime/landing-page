@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Target, Users, Clock, TrendingUp, BarChart3, CheckCircle2, Sparkles, Activity, AlertTriangle, Trophy, TrendingDown, Eye, Brain, Flame, Star, Award, BookOpen, Heart, Coffee, Github, Lightbulb, Bug } from 'lucide-react';
+import { ArrowRight, Target, Users, Clock, TrendingUp, BarChart3, CheckCircle2, Sparkles, Activity, AlertTriangle, Trophy, TrendingDown, Eye, Brain, Flame, Star, Award, BookOpen, Heart, Coffee, Lightbulb, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Footer } from '@/components/Footer';
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  // Waitlist dialog state
+  const [waitlistDialogOpen, setWaitlistDialogOpen] = useState(false);
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
 
   // Feature request dialog state
   const [featureDialogOpen, setFeatureDialogOpen] = useState(false);
@@ -27,15 +29,16 @@ export default function Home() {
   const [includeDeviceInfo, setIncludeDeviceInfo] = useState(true);
   const [bugSubmitted, setBugSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleWaitlistSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In production, this would send to your backend/email service
-    console.log('Waitlist signup:', email);
-    setSubmitted(true);
+    console.log('Waitlist signup:', waitlistEmail);
+    setWaitlistSubmitted(true);
     setTimeout(() => {
-      setSubmitted(false);
-      setEmail('');
-    }, 3000);
+      setWaitlistSubmitted(false);
+      setWaitlistEmail('');
+      setWaitlistDialogOpen(false);
+    }, 2000);
   };
 
   const handleFeatureSubmit = (e: React.FormEvent) => {
@@ -112,28 +115,16 @@ export default function Home() {
               The intelligent task management system that helps teams and individuals achieve their goals with precision and clarity.
             </p>
 
-            {/* Email Signup */}
+            {/* Waitlist Button */}
             <div className="max-w-md mx-auto mb-4">
-              {!submitted ? (
-                <form onSubmit={handleSubmit} className="flex gap-2">
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="flex-1"
-                  />
-                  <Button type="submit" size="lg">
-                    Join Waitlist
-                  </Button>
-                </form>
-              ) : (
-                <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                  <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="font-medium text-green-600 dark:text-green-400">Thanks! You're on the list.</span>
-                </div>
-              )}
+              <Button
+                size="lg"
+                onClick={() => setWaitlistDialogOpen(true)}
+                className="w-full sm:w-auto px-8"
+              >
+                Join Waitlist
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
             </div>
             <p className="text-sm text-muted-foreground">
               Be the first to know when we launch. No spam, ever.
@@ -676,115 +667,56 @@ export default function Home() {
           <p className="text-lg text-muted-foreground mb-8">
             Join the waitlist and be among the first to experience Stride when we launch.
           </p>
-          <div className="max-w-md mx-auto">
-            {!submitted ? (
-              <form onSubmit={handleSubmit} className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="flex-1"
-                />
-                <Button type="submit" size="lg">
-                  Join Waitlist
-                </Button>
-              </form>
-            ) : (
-              <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                <span className="font-medium text-green-600 dark:text-green-400">Thanks! You're on the list.</span>
-              </div>
-            )}
-          </div>
+          <Button
+            size="lg"
+            onClick={() => setWaitlistDialogOpen(true)}
+            className="px-8"
+          >
+            Join Waitlist
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
         </div>
       </section>
 
       {/* Support Section */}
-      <section id="support-section" className="py-24 border-t bg-accent/20">
+      <section id="support-section" className="py-24 border-t bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 mb-4">
               <Heart className="h-3.5 w-3.5 text-pink-600 dark:text-pink-400" />
-              <span className="text-xs font-medium text-pink-600 dark:text-pink-400">Support Open Source</span>
+              <span className="text-xs font-medium text-pink-600 dark:text-pink-400">Support Project</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Help build the future of productivity
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Stride is being developed as an open-source project. Your support helps us build features faster and keep the desktop app free forever.
+              Your support helps us build features faster and maintain Stride as a high-quality productivity platform.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* GitHub Sponsors */}
-            <a
-              href="https://github.com/sponsors"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-6 rounded-xl border-2 border-border hover:border-purple-500/50 bg-background hover:shadow-lg transition-all"
-            >
-              <div className="flex flex-col items-center text-center gap-3">
-                <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/5 border border-purple-500/20 flex items-center justify-center">
-                  <Github className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">GitHub Sponsors</h3>
-                  <p className="text-sm text-muted-foreground">Monthly or one-time support</p>
-                </div>
-                <div className="mt-auto">
-                  <div className="inline-flex items-center gap-1 text-sm text-purple-600 dark:text-purple-400 group-hover:gap-2 transition-all">
-                    <span>Sponsor</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            {/* One-Time Donation */}
+          <div className="flex justify-center">
+            {/* Support Stride - centered single card */}
             <a
               href="https://buymeacoffee.com/stridetime"
               target="_blank"
               rel="noopener noreferrer"
-              className="group p-6 rounded-xl border-2 border-border hover:border-yellow-500/50 bg-background hover:shadow-lg transition-all"
+              className="group p-8 rounded-2xl border-2 border-border hover:border-yellow-500/50 bg-background hover:shadow-xl transition-all max-w-md w-full"
             >
-              <div className="flex flex-col items-center text-center gap-3">
-                <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-yellow-500/10 to-amber-500/5 border border-yellow-500/20 flex items-center justify-center">
-                  <Heart className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+              <div className="flex flex-col items-center text-center gap-4">
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-yellow-500/10 to-amber-500/5 border border-yellow-500/20 flex items-center justify-center">
+                  <Heart className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1">One-Time Donation</h3>
-                  <p className="text-sm text-muted-foreground">Support with a single contribution</p>
+                  <h3 className="text-2xl font-semibold mb-2">Support Development</h3>
+                  <p className="text-muted-foreground">
+                    Support development with a one-time contribution or become a monthly supporter
+                  </p>
                 </div>
-                <div className="mt-auto">
-                  <div className="inline-flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400 group-hover:gap-2 transition-all">
-                    <span>Donate</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            {/* Contribute Code */}
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-6 rounded-xl border-2 border-border hover:border-primary/50 bg-background hover:shadow-lg transition-all"
-            >
-              <div className="flex flex-col items-center text-center gap-3">
-                <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-blue-500/5 border border-primary/20 flex items-center justify-center">
-                  <Heart className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Contribute Code</h3>
-                  <p className="text-sm text-muted-foreground">Help build features & fix bugs</p>
-                </div>
-                <div className="mt-auto">
-                  <div className="inline-flex items-center gap-1 text-sm text-primary group-hover:gap-2 transition-all">
-                    <span>View on GitHub</span>
-                    <ArrowRight className="h-4 w-4" />
+                <div className="mt-2">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-medium group-hover:gap-3 transition-all shadow-lg">
+                    <Heart className="h-5 w-5" />
+                    <span>Support Stride</span>
+                    <ArrowRight className="h-5 w-5" />
                   </div>
                 </div>
               </div>
@@ -793,7 +725,7 @@ export default function Home() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Every contribution, no matter the size, helps us build better tools for everyone. Thank you! 💙
+              Every contribution helps us build better tools for everyone. Thank you! 💙
             </p>
           </div>
         </div>
@@ -811,10 +743,10 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             {/* Feature Request */}
-            <div className="group p-8 rounded-xl border-2 border-border hover:border-blue-500/50 bg-background hover:shadow-lg transition-all">
-              <div className="flex flex-col gap-4">
+            <div className="group p-8 rounded-xl border-2 border-border hover:border-blue-500/50 bg-background hover:shadow-lg transition-all h-full">
+              <div className="flex flex-col gap-4 h-full">
                 <div className="h-14 w-14 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border border-blue-500/20 flex items-center justify-center">
                   <Lightbulb className="h-7 w-7 text-blue-600 dark:text-blue-400" />
                 </div>
@@ -837,8 +769,8 @@ export default function Home() {
             </div>
 
             {/* Report a Problem */}
-            <div className="group p-8 rounded-xl border-2 border-border hover:border-red-500/50 bg-background hover:shadow-lg transition-all">
-              <div className="flex flex-col gap-4">
+            <div className="group p-8 rounded-xl border-2 border-border hover:border-red-500/50 bg-background hover:shadow-lg transition-all h-full">
+              <div className="flex flex-col gap-4 h-full">
                 <div className="h-14 w-14 rounded-lg bg-gradient-to-br from-red-500/10 to-orange-500/5 border border-red-500/20 flex items-center justify-center">
                   <Bug className="h-7 w-7 text-red-600 dark:text-red-400" />
                 </div>
@@ -1018,6 +950,50 @@ export default function Home() {
               <CheckCircle2 className="h-5 w-5 text-green-500" />
               <span className="font-medium text-green-600 dark:text-green-400">
                 Thanks! We'll investigate this issue.
+              </span>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Waitlist Dialog */}
+      <Dialog open={waitlistDialogOpen} onOpenChange={setWaitlistDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Join the Waitlist</DialogTitle>
+            <DialogDescription>
+              Be the first to know when Stride launches. We'll send you an email with early access.
+            </DialogDescription>
+          </DialogHeader>
+
+          {!waitlistSubmitted ? (
+            <form onSubmit={handleWaitlistSubmit} className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <label htmlFor="waitlist-email" className="text-sm font-medium">
+                  Your Email
+                </label>
+                <Input
+                  id="waitlist-email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={waitlistEmail}
+                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Join Waitlist
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                We respect your privacy. No spam, ever. View our{' '}
+                <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>.
+              </p>
+            </form>
+          ) : (
+            <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-lg bg-green-500/10 border border-green-500/20">
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <span className="font-medium text-green-600 dark:text-green-400">
+                Thanks! You're on the list.
               </span>
             </div>
           )}
