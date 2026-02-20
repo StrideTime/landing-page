@@ -1,4 +1,3 @@
 {
- "installCommand": "cp .npmrc.example .npmrc &&yarn install",
- "buildCommand": "yarn build"
+  "framework": "nextjs"
 }

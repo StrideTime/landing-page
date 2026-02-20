@@ -1,0 +1,9 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with primary brand blue -->
+  <circle cx="512" cy="512" r="512" fill="#1A99E6"/>
+
+  <!-- Three chevrons pointing right with more spacing -->
+  <path d="M280 312L440 512L280 712" stroke="white" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+  <path d="M432 312L592 512L432 712" stroke="white" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" opacity="0.65"/>
+  <path d="M584 312L744 512L584 712" stroke="white" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
