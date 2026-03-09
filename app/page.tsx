@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import { submitWaitlist, submitFeatureRequest, submitBugReport } from '@/lib/submissions';
+import { useFormDialog } from '@/hooks/useFormDialog';
 import { ArrowRight, Target, Users, Clock, TrendingUp, BarChart3, CheckCircle2, Sparkles, Activity, AlertTriangle, Trophy, TrendingDown, Eye, Brain, Flame, Star, Award, BookOpen, Heart, Coffee, Lightbulb, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,83 +10,36 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Footer } from '@/components/Footer';
 
 export default function Home() {
-  // Waitlist dialog state
-  const [waitlistDialogOpen, setWaitlistDialogOpen] = useState(false);
-  const [waitlistEmail, setWaitlistEmail] = useState('');
-  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const waitlist = useFormDialog({
+    initialValues: { email: '' },
+    onSubmit: v => submitWaitlist(v.email),
+  });
 
-  // Feature request dialog state
-  const [featureDialogOpen, setFeatureDialogOpen] = useState(false);
-  const [featureTitle, setFeatureTitle] = useState('');
-  const [featureDescription, setFeatureDescription] = useState('');
-  const [featureEmail, setFeatureEmail] = useState('');
-  const [featureSubmitted, setFeatureSubmitted] = useState(false);
+  const feature = useFormDialog({
+    initialValues: { title: '', description: '', email: '' },
+    onSubmit: v => submitFeatureRequest({
+      title: v.title,
+      description: v.description,
+      email: v.email,
+    }),
+  });
 
-  // Bug report dialog state
-  const [bugDialogOpen, setBugDialogOpen] = useState(false);
-  const [bugTitle, setBugTitle] = useState('');
-  const [bugDescription, setBugDescription] = useState('');
-  const [bugEmail, setBugEmail] = useState('');
-  const [includeDeviceInfo, setIncludeDeviceInfo] = useState(true);
-  const [bugSubmitted, setBugSubmitted] = useState(false);
-
-  const handleWaitlistSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In production, this would send to your backend/email service
-    console.log('Waitlist signup:', waitlistEmail);
-    setWaitlistSubmitted(true);
-    setTimeout(() => {
-      setWaitlistSubmitted(false);
-      setWaitlistEmail('');
-      setWaitlistDialogOpen(false);
-    }, 2000);
-  };
-
-  const handleFeatureSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Feature request:', {
-      title: featureTitle,
-      description: featureDescription,
-      email: featureEmail,
-    });
-    setFeatureSubmitted(true);
-    setTimeout(() => {
-      setFeatureSubmitted(false);
-      setFeatureTitle('');
-      setFeatureDescription('');
-      setFeatureEmail('');
-      setFeatureDialogOpen(false);
-    }, 2000);
-  };
-
-  const handleBugSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const deviceInfo = includeDeviceInfo ? {
-      userAgent: navigator.userAgent,
-      platform: navigator.platform,
-      language: navigator.language,
-      screenResolution: `${window.screen.width}x${window.screen.height}`,
-      viewport: `${window.innerWidth}x${window.innerHeight}`,
-      timestamp: new Date().toISOString(),
-    } : null;
-
-    console.log('Bug report:', {
-      title: bugTitle,
-      description: bugDescription,
-      email: bugEmail,
-      deviceInfo,
-    });
-    setBugSubmitted(true);
-    setTimeout(() => {
-      setBugSubmitted(false);
-      setBugTitle('');
-      setBugDescription('');
-      setBugEmail('');
-      setIncludeDeviceInfo(true);
-      setBugDialogOpen(false);
-    }, 2000);
-  };
+  const bug = useFormDialog({
+    initialValues: { title: '', description: '', email: '', includeDeviceInfo: true as boolean },
+    onSubmit: v => submitBugReport({
+      title: v.title,
+      description: v.description,
+      email: v.email,
+      deviceInfo: v.includeDeviceInfo ? {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenResolution: `${window.screen.width}x${window.screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        timestamp: new Date().toISOString(),
+      } : null,
+    }),
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,7 +73,7 @@ export default function Home() {
             <div className="max-w-md mx-auto mb-4">
               <Button
                 size="lg"
-                onClick={() => setWaitlistDialogOpen(true)}
+                onClick={() => waitlist.setOpen(true)}
                 className="w-full sm:w-auto px-8"
               >
                 Join Waitlist
@@ -669,7 +623,7 @@ export default function Home() {
           </p>
           <Button
             size="lg"
-            onClick={() => setWaitlistDialogOpen(true)}
+            onClick={() => waitlist.setOpen(true)}
             className="px-8"
           >
             Join Waitlist
@@ -758,7 +712,7 @@ export default function Home() {
                 </div>
                 <div className="mt-auto">
                   <button
-                    onClick={() => setFeatureDialogOpen(true)}
+                    onClick={() => feature.setOpen(true)}
                     className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium hover:gap-3 transition-all"
                   >
                     <span>Submit Feature Request</span>
@@ -782,7 +736,7 @@ export default function Home() {
                 </div>
                 <div className="mt-auto">
                   <button
-                    onClick={() => setBugDialogOpen(true)}
+                    onClick={() => bug.setOpen(true)}
                     className="inline-flex items-center gap-2 text-red-600 dark:text-red-400 font-medium hover:gap-3 transition-all"
                   >
                     <span>Report an Issue</span>
@@ -805,7 +759,7 @@ export default function Home() {
       </section>
 
       {/* Feature Request Dialog */}
-      <Dialog open={featureDialogOpen} onOpenChange={setFeatureDialogOpen}>
+      <Dialog open={feature.open} onOpenChange={feature.setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Request a Feature</DialogTitle>
@@ -814,8 +768,8 @@ export default function Home() {
             </DialogDescription>
           </DialogHeader>
 
-          {!featureSubmitted ? (
-            <form onSubmit={handleFeatureSubmit} className="space-y-4 mt-4">
+          {!feature.submitted ? (
+            <form onSubmit={feature.handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <label htmlFor="feature-title" className="text-sm font-medium">
                   Feature Title
@@ -824,8 +778,8 @@ export default function Home() {
                   id="feature-title"
                   type="text"
                   placeholder="e.g., Add dark mode support"
-                  value={featureTitle}
-                  onChange={(e) => setFeatureTitle(e.target.value)}
+                  value={feature.values.title}
+                  onChange={e => feature.setField('title', e.target.value)}
                   required
                 />
               </div>
@@ -836,8 +790,8 @@ export default function Home() {
                 <textarea
                   id="feature-description"
                   placeholder="Describe the feature and how it would help you..."
-                  value={featureDescription}
-                  onChange={(e) => setFeatureDescription(e.target.value)}
+                  value={feature.values.description}
+                  onChange={e => feature.setField('description', e.target.value)}
                   required
                   className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
@@ -850,11 +804,14 @@ export default function Home() {
                   id="feature-email"
                   type="email"
                   placeholder="Enter your email"
-                  value={featureEmail}
-                  onChange={(e) => setFeatureEmail(e.target.value)}
+                  value={feature.values.email}
+                  onChange={e => feature.setField('email', e.target.value)}
                   required
                 />
               </div>
+              {feature.error && (
+                <p className="text-sm text-red-500 text-center">{feature.error}</p>
+              )}
               <Button type="submit" className="w-full">
                 Submit Request
               </Button>
@@ -875,7 +832,7 @@ export default function Home() {
       </Dialog>
 
       {/* Bug Report Dialog */}
-      <Dialog open={bugDialogOpen} onOpenChange={setBugDialogOpen}>
+      <Dialog open={bug.open} onOpenChange={bug.setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Report a Problem</DialogTitle>
@@ -884,8 +841,8 @@ export default function Home() {
             </DialogDescription>
           </DialogHeader>
 
-          {!bugSubmitted ? (
-            <form onSubmit={handleBugSubmit} className="space-y-4 mt-4">
+          {!bug.submitted ? (
+            <form onSubmit={bug.handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <label htmlFor="bug-title" className="text-sm font-medium">
                   Issue Title
@@ -894,8 +851,8 @@ export default function Home() {
                   id="bug-title"
                   type="text"
                   placeholder="e.g., App crashes when creating a task"
-                  value={bugTitle}
-                  onChange={(e) => setBugTitle(e.target.value)}
+                  value={bug.values.title}
+                  onChange={e => bug.setField('title', e.target.value)}
                   required
                 />
               </div>
@@ -906,8 +863,8 @@ export default function Home() {
                 <textarea
                   id="bug-description"
                   placeholder="Describe what you were doing when the problem occurred..."
-                  value={bugDescription}
-                  onChange={(e) => setBugDescription(e.target.value)}
+                  value={bug.values.description}
+                  onChange={e => bug.setField('description', e.target.value)}
                   required
                   className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
@@ -920,8 +877,8 @@ export default function Home() {
                   id="bug-email"
                   type="email"
                   placeholder="Enter your email"
-                  value={bugEmail}
-                  onChange={(e) => setBugEmail(e.target.value)}
+                  value={bug.values.email}
+                  onChange={e => bug.setField('email', e.target.value)}
                   required
                 />
               </div>
@@ -929,14 +886,17 @@ export default function Home() {
                 <input
                   type="checkbox"
                   id="include-device-info"
-                  checked={includeDeviceInfo}
-                  onChange={(e) => setIncludeDeviceInfo(e.target.checked)}
+                  checked={bug.values.includeDeviceInfo}
+                  onChange={e => bug.setField('includeDeviceInfo', e.target.checked)}
                   className="mt-0.5"
                 />
                 <label htmlFor="include-device-info" className="text-xs text-muted-foreground cursor-pointer">
                   Include device information (browser, OS, screen size) to help us reproduce the issue. This data is only used for debugging.
                 </label>
               </div>
+              {bug.error && (
+                <p className="text-sm text-red-500 text-center">{bug.error}</p>
+              )}
               <Button type="submit" className="w-full">
                 Submit Report
               </Button>
@@ -957,7 +917,7 @@ export default function Home() {
       </Dialog>
 
       {/* Waitlist Dialog */}
-      <Dialog open={waitlistDialogOpen} onOpenChange={setWaitlistDialogOpen}>
+      <Dialog open={waitlist.open} onOpenChange={waitlist.setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Join the Waitlist</DialogTitle>
@@ -966,8 +926,8 @@ export default function Home() {
             </DialogDescription>
           </DialogHeader>
 
-          {!waitlistSubmitted ? (
-            <form onSubmit={handleWaitlistSubmit} className="space-y-4 mt-4">
+          {!waitlist.submitted ? (
+            <form onSubmit={waitlist.handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <label htmlFor="waitlist-email" className="text-sm font-medium">
                   Your Email
@@ -976,11 +936,14 @@ export default function Home() {
                   id="waitlist-email"
                   type="email"
                   placeholder="name@example.com"
-                  value={waitlistEmail}
-                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  value={waitlist.values.email}
+                  onChange={e => waitlist.setField('email', e.target.value)}
                   required
                 />
               </div>
+              {waitlist.error && (
+                <p className="text-sm text-red-500 text-center">{waitlist.error}</p>
+              )}
               <Button type="submit" className="w-full">
                 Join Waitlist
               </Button>
