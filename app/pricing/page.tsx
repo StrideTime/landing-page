@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { submitWaitlist, submitFeatureRequest } from '@/lib/submissions';
+import { useFormDialog } from '@/hooks/useFormDialog';
 import { Sparkles, Zap, Plug, CheckCircle2, Users, Check, ArrowRight, Building2, CreditCard, X, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,76 +14,35 @@ import type { PricingTier } from '@/components/pricing/PricingCard';
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const selectedTierRef = useRef<PricingTier | null>(null);
 
-  // Waitlist dialog state
-  const [waitlistDialogOpen, setWaitlistDialogOpen] = useState(false);
-  const [waitlistEmail, setWaitlistEmail] = useState('');
-  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const waitlist = useFormDialog({
+    initialValues: { email: '' },
+    onSubmit: v => submitWaitlist(v.email),
+  });
 
-  // Tier-specific dialog state
-  const [tierDialogOpen, setTierDialogOpen] = useState(false);
-  const [tierDialogEmail, setTierDialogEmail] = useState('');
-  const [tierDialogSubmitted, setTierDialogSubmitted] = useState(false);
-  const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null);
+  const tierWaitlist = useFormDialog({
+    initialValues: { email: '' },
+    onSubmit: v => submitWaitlist(v.email, selectedTierRef.current?.name?.toLowerCase()),
+  });
 
-  // Integration request dialog state
-  const [integrationDialogOpen, setIntegrationDialogOpen] = useState(false);
-  const [integrationEmail, setIntegrationEmail] = useState('');
-  const [integrationName, setIntegrationName] = useState('');
-  const [integrationDescription, setIntegrationDescription] = useState('');
-  const [integrationSubmitted, setIntegrationSubmitted] = useState(false);
-
-  const handleWaitlistSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Waitlist signup:', waitlistEmail);
-    setWaitlistSubmitted(true);
-    setTimeout(() => {
-      setWaitlistSubmitted(false);
-      setWaitlistEmail('');
-      setWaitlistDialogOpen(false);
-    }, 2000);
-  };
-
-  const handleTierDialogSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Tier waitlist signup:', tierDialogEmail, 'for tier:', selectedTier?.name);
-    setTierDialogSubmitted(true);
-    setTimeout(() => {
-      setTierDialogSubmitted(false);
-      setTierDialogEmail('');
-      setTierDialogOpen(false);
-    }, 2000);
-  };
+  const integration = useFormDialog({
+    initialValues: { name: '', description: '', email: '' },
+    onSubmit: v => submitFeatureRequest({
+      title: v.name,
+      description: v.description,
+      email: v.email,
+      type: 'integration',
+    }),
+  });
 
   const handlePricingCta = (tier: PricingTier) => {
     if (tier.comingSoon) {
-      setSelectedTier(tier);
-      setTierDialogOpen(true);
+      selectedTierRef.current = tier;
+      tierWaitlist.setOpen(true);
     } else {
-      // Open main waitlist dialog for non-coming-soon tiers
-      setWaitlistDialogOpen(true);
+      waitlist.setOpen(true);
     }
-  };
-
-  const handleIntegrationRequest = () => {
-    setIntegrationDialogOpen(true);
-  };
-
-  const handleIntegrationSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Integration request:', {
-      email: integrationEmail,
-      name: integrationName,
-      description: integrationDescription,
-    });
-    setIntegrationSubmitted(true);
-    setTimeout(() => {
-      setIntegrationSubmitted(false);
-      setIntegrationEmail('');
-      setIntegrationName('');
-      setIntegrationDescription('');
-      setIntegrationDialogOpen(false);
-    }, 2000);
   };
 
   return (
@@ -223,14 +184,14 @@ export default function PricingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {integrations.map((integration) => (
-              <IntegrationCard key={integration.name} integration={integration} />
+            {integrations.map((int) => (
+              <IntegrationCard key={int.name} integration={int} />
             ))}
 
             {/* Request Integration Card */}
             <div
               className="p-5 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 flex flex-col items-center justify-center gap-3 hover:border-primary/50 hover:bg-primary/10 transition-all cursor-pointer group"
-              onClick={handleIntegrationRequest}
+              onClick={() => integration.setOpen(true)}
             >
               <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Plug className="h-7 w-7 text-primary" />
@@ -244,9 +205,9 @@ export default function PricingPage() {
                   variant="outline"
                   size="sm"
                   className="border-primary/30 hover:border-primary/50 hover:bg-primary/10"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
-                    handleIntegrationRequest();
+                    integration.setOpen(true);
                   }}
                 >
                   Request Integration
@@ -273,7 +234,7 @@ export default function PricingPage() {
           </p>
           <Button
             size="lg"
-            onClick={() => setWaitlistDialogOpen(true)}
+            onClick={() => waitlist.setOpen(true)}
             className="px-8"
           >
             Join Waitlist
@@ -285,7 +246,7 @@ export default function PricingPage() {
       <Footer />
 
       {/* Waitlist Dialog */}
-      <Dialog open={waitlistDialogOpen} onOpenChange={setWaitlistDialogOpen}>
+      <Dialog open={waitlist.open} onOpenChange={waitlist.setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Join the Waitlist</DialogTitle>
@@ -294,8 +255,8 @@ export default function PricingPage() {
             </DialogDescription>
           </DialogHeader>
 
-          {!waitlistSubmitted ? (
-            <form onSubmit={handleWaitlistSubmit} className="space-y-4 mt-4">
+          {!waitlist.submitted ? (
+            <form onSubmit={waitlist.handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <label htmlFor="waitlist-email" className="text-sm font-medium">
                   Your Email
@@ -304,11 +265,14 @@ export default function PricingPage() {
                   id="waitlist-email"
                   type="email"
                   placeholder="name@example.com"
-                  value={waitlistEmail}
-                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  value={waitlist.values.email}
+                  onChange={e => waitlist.setField('email', e.target.value)}
                   required
                 />
               </div>
+              {waitlist.error && (
+                <p className="text-sm text-red-500 text-center">{waitlist.error}</p>
+              )}
               <Button type="submit" className="w-full">
                 Join Waitlist
               </Button>
@@ -329,17 +293,17 @@ export default function PricingPage() {
       </Dialog>
 
       {/* Tier-Specific Coming Soon Dialog */}
-      <Dialog open={tierDialogOpen} onOpenChange={setTierDialogOpen}>
+      <Dialog open={tierWaitlist.open} onOpenChange={tierWaitlist.setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Get Notified - {selectedTier?.name} Plan</DialogTitle>
+            <DialogTitle>Get Notified - {selectedTierRef.current?.name} Plan</DialogTitle>
             <DialogDescription>
-              Be the first to know when the {selectedTier?.name} plan launches. We'll send you an email as soon as it's available.
+              Be the first to know when the {selectedTierRef.current?.name} plan launches. We'll send you an email as soon as it's available.
             </DialogDescription>
           </DialogHeader>
 
-          {!tierDialogSubmitted ? (
-            <form onSubmit={handleTierDialogSubmit} className="space-y-4 mt-4">
+          {!tierWaitlist.submitted ? (
+            <form onSubmit={tierWaitlist.handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <label htmlFor="tier-email" className="text-sm font-medium">
                   Your Email
@@ -348,11 +312,14 @@ export default function PricingPage() {
                   id="tier-email"
                   type="email"
                   placeholder="name@example.com"
-                  value={tierDialogEmail}
-                  onChange={(e) => setTierDialogEmail(e.target.value)}
+                  value={tierWaitlist.values.email}
+                  onChange={e => tierWaitlist.setField('email', e.target.value)}
                   required
                 />
               </div>
+              {tierWaitlist.error && (
+                <p className="text-sm text-red-500 text-center">{tierWaitlist.error}</p>
+              )}
               <Button type="submit" className="w-full">
                 Notify Me
               </Button>
@@ -369,7 +336,7 @@ export default function PricingPage() {
       </Dialog>
 
       {/* Request Integration Dialog */}
-      <Dialog open={integrationDialogOpen} onOpenChange={setIntegrationDialogOpen}>
+      <Dialog open={integration.open} onOpenChange={integration.setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Request an Integration</DialogTitle>
@@ -378,8 +345,8 @@ export default function PricingPage() {
             </DialogDescription>
           </DialogHeader>
 
-          {!integrationSubmitted ? (
-            <form onSubmit={handleIntegrationSubmit} className="space-y-4 mt-4">
+          {!integration.submitted ? (
+            <form onSubmit={integration.handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <label htmlFor="integration-name" className="text-sm font-medium">
                   Integration Name
@@ -388,8 +355,8 @@ export default function PricingPage() {
                   id="integration-name"
                   type="text"
                   placeholder="e.g., Notion, Linear, Figma"
-                  value={integrationName}
-                  onChange={(e) => setIntegrationName(e.target.value)}
+                  value={integration.values.name}
+                  onChange={e => integration.setField('name', e.target.value)}
                   required
                 />
               </div>
@@ -400,8 +367,8 @@ export default function PricingPage() {
                 <textarea
                   id="integration-description"
                   placeholder="Tell us how this integration would help your workflow..."
-                  value={integrationDescription}
-                  onChange={(e) => setIntegrationDescription(e.target.value)}
+                  value={integration.values.description}
+                  onChange={e => integration.setField('description', e.target.value)}
                   required
                   className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
@@ -414,11 +381,14 @@ export default function PricingPage() {
                   id="integration-email"
                   type="email"
                   placeholder="Enter your email"
-                  value={integrationEmail}
-                  onChange={(e) => setIntegrationEmail(e.target.value)}
+                  value={integration.values.email}
+                  onChange={e => integration.setField('email', e.target.value)}
                   required
                 />
               </div>
+              {integration.error && (
+                <p className="text-sm text-red-500 text-center">{integration.error}</p>
+              )}
               <Button type="submit" className="w-full">
                 Submit Request
               </Button>
