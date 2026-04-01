@@ -10,7 +10,7 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © 2026 Stride. All rights reserved.
           </p>
-          <Link href="/demo" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="https://demo.stridetime.app" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             View Demo →
           </Link>
         </div>

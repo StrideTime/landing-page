@@ -36,11 +36,8 @@ export function Header() {
                 Pricing
               </Button>
             </Link>
-            <Link href="/demo">
-              <Button
-                variant="outline"
-                className={pathname === '/demo' ? 'bg-accent' : ''}
-              >
+            <Link href="https://demo.stridetime.app" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
                 View Demo
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
